@@ -18,14 +18,14 @@ export function createUser(data) {
 
 export function getUser(id) {
   return request({
-    url: `/users/${id}/`,
+    url: `/users/${id}`,
     method: 'get'
   })
 }
 
 export function updateUser(id, data) {
   return request({
-    url: `/users/${id}/`,
+    url: `/users/${id}`,
     method: 'put',
     data
   })
@@ -33,7 +33,7 @@ export function updateUser(id, data) {
 
 export function deleteUser(id) {
   return request({
-    url: `/users/${id}/`,
+    url: `/users/${id}`,
     method: 'delete'
   })
 }
