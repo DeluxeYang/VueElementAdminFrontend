@@ -106,7 +106,9 @@
         label="角色名称"
         align="center">
         <template slot-scope="scope">
-          <span v-if="scope.row.edit">
+          <span
+            v-if="scope.row.edit"
+            @click.stop>
             <el-input
               v-model="scope.row.role_name"
               :disabled="scope.row.loading"
@@ -121,7 +123,9 @@
         label="备注"
         align="center">
         <template slot-scope="scope">
-          <span v-if="scope.row.edit">
+          <span
+            v-if="scope.row.edit"
+            @click.stop>
             <el-input
               v-model="scope.row.remark"
               :disabled="scope.row.loading"
@@ -297,8 +301,8 @@ export default {
      * 获取原始菜单数据
      */
     fetchMenuData() {
-      getMenus().then((data) => {
-        this.originMenuData = data.data
+      getMenus().then(response => {
+        this.originMenuData = response.data
       }).catch(message => {
         this.$message.error(message)
       })
@@ -318,11 +322,13 @@ export default {
         id: id,
         role_name: '',
         remark: '',
+
+        menuTreeData: [],
+        menu: [],
+
         edit: true,
         isNew: true,
-        expand: false,
-        menuTreeData: [],
-        menu: []
+        expand: false
       }
       this.list.push(row) // 创建一个新role对象，推入list中
       this.onEdit(row) // 打开edit
@@ -472,7 +478,7 @@ export default {
           row.expand = false
         }
       } else { // 当前row，在expandedRows中，则正在展开当前行
-        if (!row.isNew) { // 如果不是新角色and没有menu字段
+        if (!row.isNew && !row.menu) { // 如果不是新角色and没有menu字段
           this.fetchRolePermission(row) // 获取权限数据
         }
         this.refreshRoleData(row) // 刷新展开框Tree数据

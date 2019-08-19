@@ -54,22 +54,18 @@
         </template>
 
         <template slot-scope="scope">
-          <div v-loading="scope.row.loading">
-            <el-divider content-position="left">
-              关联角色
-            </el-divider>
-            <el-tooltip
-              v-for="(item, index) in originRolesData"
-              :key="index"
-              :content="item.remark"
-              placement="top">
-              <el-tag
-                v-if="scope.row.roles && scope.row.roles.indexOf(item.id) > -1"
-                style="margin-left: 0; margin-right: 20px">
-                {{ item.role_name }}
-              </el-tag>
-            </el-tooltip>
-          </div>
+          <el-row :gutter="20">
+            <el-col
+              :span="12"
+              :offset="6">
+              <el-transfer
+                :ref="'transfer'+scope.row.id"
+                v-model="scope.row.roles"
+                v-loading="scope.row.loading"
+                :data="scope.row.rolesData"
+                :titles="['未关联角色', '已关联角色']" />
+            </el-col>
+          </el-row>
         </template>
       </el-table-column>
 
@@ -81,59 +77,160 @@
 
       <el-table-column
         label="用户名"
-        align="center"
-        prop="username" />
+        align="center">
+        <template slot-scope="scope">
+          <span
+            v-if="scope.row.edit"
+            @click.stop>
+            <el-input
+              v-model="scope.row.username"
+              :disabled="scope.row.loading"
+              size="small" />
+          </span>
+          <span v-else> {{ scope.row.username }} </span>
+        </template>
+      </el-table-column>
 
       <el-table-column
         label="邮箱"
-        align="center"
-        prop="email" />
+        align="center">
+        <template slot-scope="scope">
+          <span
+            v-if="scope.row.edit"
+            @click.stop>
+            <el-input
+              v-model="scope.row.email"
+              :disabled="scope.row.loading"
+              size="small" />
+          </span>
+          <span v-else> {{ scope.row.email }} </span>
+        </template>
+      </el-table-column>
 
       <el-table-column
         label="电话"
-        align="center"
-        prop="mobile" />
+        align="center">
+        <template slot-scope="scope">
+          <span
+            v-if="scope.row.edit"
+            @click.stop>
+            <el-input
+              v-model="scope.row.mobile"
+              :disabled="scope.row.loading"
+              size="small" />
+          </span>
+          <span v-else> {{ scope.row.mobile }} </span>
+        </template>
+      </el-table-column>
 
       <el-table-column
         label="状态"
-        align="center"
-        width="160">
+        align="center">
         <template slot-scope="scope">
-          <el-tag
-            v-if="scope.row.state === 1"
-            type="success">
-            启用
-          </el-tag>
-          <el-tag
-            v-else-if="scope.row.state === 0"
-            type="danger">
-            禁用
-          </el-tag>
+          <span
+            v-if="scope.row.edit"
+            @click.stop>
+            <el-radio-group
+              v-model="scope.row.state"
+              size="small">
+              <el-radio-button :label="0">
+                禁用
+              </el-radio-button>
+              <el-radio-button :label="1">
+                启用
+              </el-radio-button>
+            </el-radio-group>
+          </span>
+          <span v-else>
+            <el-tag
+              v-if="scope.row.state === 1"
+              type="success">
+              启用
+            </el-tag>
+            <el-tag
+              v-else-if="scope.row.state === 0"
+              type="danger">
+              禁用
+            </el-tag>
+          </span>
         </template>
       </el-table-column>
 
       <el-table-column
         align="center"
         label="操作"
-        width="300">
+        width="200">
         <template slot-scope="scope">
-          <el-button
-            v-if="updateFlag"
-            :icon="icons.UPDATE_ICON"
-            type="primary"
-            size="mini"
-            @click.prevent.stop="onEdit(scope.row)">
-            编辑
-          </el-button>
+          <span v-if="!scope.row.isNew">
+            <span v-if="scope.row.edit">
+              <el-button
+                v-if="updateFlag"
+                :loading="scope.row.loading"
+                :icon="icons.CHECK_ICON"
+                type="success"
+                size="mini"
+                @click.prevent.stop="onEditConfirm(scope.row)">
+                确认
+              </el-button>
+            </span>
+            <span v-else>
+              <el-button
+                v-if="updateFlag"
+                :loading="scope.row.loading"
+                :icon="icons.UPDATE_ICON"
+                type="primary"
+                size="mini"
+                @click.prevent.stop="onEdit(scope.row)">
+                编辑
+              </el-button>
+            </span>
+            <span v-if="scope.row.edit">
+              <el-button
+                v-if="updateFlag"
+                :loading="scope.row.loading"
+                :icon="icons.CLOSE_ICON"
+                type="warning"
+                size="mini"
+                style="margin-left: 10px"
+                @click.prevent.stop="onEditCancel(scope.row)">
+                取消
+              </el-button>
+            </span>
+            <span v-else>
+              <el-button
+                v-if="deleteFlag"
+                :loading="scope.row.loading"
+                :icon="icons.DELETE_ICON"
+                type="danger"
+                size="mini"
+                style="margin-left: 10px"
+                @click.prevent.stop="onDelete(scope.row)">
+                删除
+              </el-button>
+            </span>
+          </span>
+          <span v-else>
+            <el-button
+              v-if="createFlag"
+              :loading="scope.row.loading"
+              :icon="icons.CHECK_ICON"
+              type="success"
+              size="mini"
+              @click.prevent.stop="onCreateConfirm(scope.row)">
+              确认
+            </el-button>
 
-          <el-button
-            v-if="deleteFlag"
-            :icon="icons.DELETE_ICON"
-            type="danger"
-            size="mini"
-            @click.prevent.stop="onDelete(scope.row)">
-            删除
-          </el-button>
+            <el-button
+              v-if="createFlag"
+              :icon="icons.CLOSE_ICON"
+              :loading="scope.row.loading"
+              type="warning"
+              size="mini"
+              style="margin-left: 10px"
+              @click.prevent.stop="onCreateCancel(scope.row)">
+              取消
+            </el-button>
+          </span>
         </template>
       </el-table-column>
     </el-table>
@@ -145,92 +242,6 @@
       :limit.sync="listQuery.limit"
       style="text-align: center;"
       @pagination="fetchList" />
-
-    <el-dialog
-      v-dialogDrag
-      :title="dialogState[dialogStatus]"
-      :visible.sync="dialogVisible">
-      <el-form
-        ref="dataForm"
-        v-loading="dialogData.loading"
-        :rules="rules"
-        :model="dialogData"
-        label-position="left"
-        label-width="70px"
-        style="max-width: 80%; margin-left:50px;">
-        <el-form-item
-          label="用户名"
-          prop="username">
-          <el-input v-model="dialogData.username" />
-        </el-form-item>
-
-        <el-form-item
-          label="密码"
-          prop="username">
-          <el-input v-model="dialogData.password" />
-        </el-form-item>
-
-        <el-form-item
-          label="邮箱"
-          prop="email">
-          <el-input v-model="dialogData.email" />
-        </el-form-item>
-
-        <el-form-item
-          label="电话"
-          prop="mobile">
-          <el-input v-model="dialogData.mobile" />
-        </el-form-item>
-
-        <el-form-item
-          label="状态"
-          prop="status">
-          <el-radio-group
-            v-model="dialogData.state"
-            size="small">
-            <el-radio-button :label="0">
-              禁用
-            </el-radio-button>
-            <el-radio-button :label="1">
-              启用
-            </el-radio-button>
-          </el-radio-group>
-        </el-form-item>
-
-        <el-form-item
-          label="关联角色"
-          prop="roles">
-          <el-checkbox-group
-            v-model="dialogData.roles"
-            size="small">
-            <el-tooltip
-              v-for="(item, index) in originRolesData"
-              :key="index"
-              :content="item.remark"
-              placement="top">
-              <el-checkbox
-                :label="item.id"
-                border
-                style="margin-left: 0; margin-right: 20px">
-                {{ item.role_name }}
-              </el-checkbox>
-            </el-tooltip>
-          </el-checkbox-group>
-        </el-form-item>
-      </el-form>
-      <div
-        slot="footer"
-        class="dialog-footer">
-        <el-button @click="dialogVisible = false">
-          取消
-        </el-button>
-        <el-button
-          type="primary"
-          @click="dialogStatus==='create'?createConfirm():editConfirm()">
-          确认
-        </el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -239,7 +250,6 @@ import { getUsers, updateUser, createUser, deleteUser, getUser } from '@/api/man
 import { getRoles } from '@/api/manage/role'
 import waves from '@/directive/waves' // Waves directive
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-import rules from '@/utils/rules'
 import { seq } from '@/utils/seq'
 import { viewButtonPermission } from '@/utils/permission'
 import icons from '@/utils/icons'
@@ -269,29 +279,6 @@ export default {
       list: [],
       rowLoading: false,
 
-      dialogVisible: false,
-      dialogStatus: '',
-      dialogData: {
-        id: '',
-        username: null,
-        email: null,
-        mobile: null,
-        state: 1,
-        expand: false,
-        loading: false,
-        roles: []
-      },
-      dialogModel: null,
-      dialogState: {
-        'update': '编辑',
-        'create': '新增'
-      },
-
-      rules: {
-        username: [{ required: true, message: '请填写用户名', trigger: 'blur' }],
-        password: [{ required: true, message: '请填写密码', trigger: 'blur' }],
-        email: rules.email
-      },
       originRolesData: [],
       rolesTotal: 0,
       rolesQuery: {
@@ -314,20 +301,22 @@ export default {
       this.listLoading = true
       getUsers(this.listQuery).then(response => {
         this.list = seq(response.data.list, response.data.page, response.data.limit)
-        this.list.map(item => {
-          item.roles = []
-          item.expand = false
-          item.loading = false
+        for (let i = 0; i < this.list.length; i++) {
+          this.list[i].roles = []
+          this.list[i].rolesData = []
+          this.list[i].edit = false // 初始化编辑状态字段
+          this.list[i].expand = false // 初始化展开状态字段
+          this.list[i].loading = false // 初始化展开状态字段
           this.$nextTick(() => {
-            this.$refs.table.toggleRowExpansion(item, false)
+            this.$refs.table.toggleRowExpansion(this.list[i], false)
           })
-        })
+        }
         this.total = response.data.total
         this.listQuery.page = response.data.page
         this.listQuery.limit = response.data.limit
         this.listLoading = false
       }).catch(message => {
-        this.$message.error({ message: message })
+        this.$message.error(message)
       })
     },
 
@@ -345,8 +334,147 @@ export default {
           this.fetchRoles()
         }
       }).catch(message => {
-        this.$message.error({ message: message })
+        this.$message.error(message)
       })
+    },
+
+    onSearch() {
+      this.listQuery.page = 1
+      this.fetchList()
+    },
+
+    /**
+     * 创建新用户
+     */
+    onCreate() { // 创建
+      const id = Math.random().toString(36).substr(2)
+      const row = {
+        id: id,
+        username: '',
+        email: '',
+        mobile: '',
+        state: 1,
+
+        rolesData: [],
+        roles: [],
+
+        edit: true,
+        isNew: true,
+        expand: false
+      }
+      this.list.push(row) // 创建一个新role对象，推入list中
+      this.onEdit(row) // 打开edit
+    },
+
+    /**
+     * 创建一个新用户
+     */
+    onCreateConfirm(row) { // 创建确认: 后端
+      if (row.username === '') {
+        this.$notify.error({ title: '失败', message: '用户名不能为空' })
+      } if (row.email === '') {
+        this.$notify.error({ title: '失败', message: '邮箱不能为空' })
+      } else {
+        if (this.$refs.hasOwnProperty('transfer' + row.id) && this.$refs['transfer' + row.id]) {
+          this.changeRowLoadingStatus(true, row)
+          const data = {
+            id: 0,
+            username: row.username,
+            email: row.email,
+            mobile: row.mobile,
+            state: row.state,
+            roles: row.roles
+          }
+          createUser(data).then(response => {
+            row.isNew = false
+            this.total++
+            row.index = this.total
+            row = Object.assign(row, response.data)
+            row.edit = false
+            this.refreshRoleData(row) // 刷新展开框Tree数据
+            this.changeRowLoadingStatus(false, row)
+            this.$notify.success({ title: '成功', message: '添加成功' })
+          }).catch(message => {
+            this.changeRowLoadingStatus(false, row)
+            this.$notify.error({ title: '添加失败', message: message })
+          })
+        }
+      }
+    },
+
+    /**
+     * 取消创建，并从this.list中删除
+     */
+    onCreateCancel(row) { // 取消创建
+      const index = this.list.indexOf(row)
+      this.list.splice(index, 1)
+    },
+
+    /**
+     * 打开编辑模式
+     */
+    onEdit(row) { // 编辑
+      row.edit = true // 编辑模式打开
+      this.rowExpand(row) // 行展开
+      this.refreshRoleData(row)
+    },
+
+    /**
+     * 在编辑模式下，点击确认时调用的方法
+     */
+    onEditConfirm(row) { // 编辑确认: 后端
+      if (this.$refs.hasOwnProperty('transfer' + row.id) && this.$refs['transfer' + row.id]) {
+        this.changeRowLoadingStatus(true, row)
+        updateUser(row.id, row).then(response => {
+          row = Object.assign(row, response.data)
+          row.edit = false
+          this.refreshRoleData(row) // 刷新展开框Tree数据
+          this.changeRowLoadingStatus(false, row)
+          this.$notify.success({ title: '成功', message: '编辑成功' })
+        }).catch(message => {
+          this.changeRowLoadingStatus(false, row)
+          this.$notify.error({ title: '编辑失败', message: message })
+        })
+      }
+    },
+
+    /**
+     *编辑模式下，点击取消
+     */
+    onEditCancel(row) {
+      this.changeRowLoadingStatus(true, row)
+      getUser(row.id).then((response) => {
+        row = Object.assign(row, response.data)
+        row.edit = false
+        this.refreshRoleData(row)
+        this.changeRowLoadingStatus(false, row)
+      }).catch(message => {
+        this.$message.error(message)
+      })
+    },
+
+    /**
+     * 点击删除时的回调
+     */
+    onDelete(row) { // 删除确认: 后端
+      this.$confirm(`是否确认删除【${row.username}】？`, '提示', {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type: 'error',
+        center: true
+      }).then(() => {
+        deleteUser(row.id).then(response => {
+          for (let i = 0; i < this.list.length; i++) {
+            if (this.list[i].id === row.id) {
+              this.list.splice(i, 1)
+              break
+            }
+          }
+          this.$notify.success({ title: '删除成功', message: response.data.username })
+        }).catch(message => {
+          this.$notify.error({ title: '失败', message: message })
+        })
+      }).catch(() => {})
     },
 
     /**
@@ -360,16 +488,28 @@ export default {
      * 每当行展开或者行合并时的回调
      */
     onExpandChange(row, expandedRows) {
-      row.expand = expandedRows.indexOf(row) !== -1
-      if (row.expand) {
-        this.changeRowLoadingStatus(true, row)
-        getUser(row.id).then(response => {
-          row = Object.assign(row, response.data)
-          this.changeRowLoadingStatus(false, row)
-        }).catch(message => {
-          this.changeRowLoadingStatus(false, row)
-          this.$message.error({ message: message })
-        })
+      if (expandedRows.indexOf(row) === -1) { // 当前row，不在expandedRows中，则正在关闭当前行
+        if (row.edit) { // 如果编辑模式已经打开，这不能关闭展开行
+          this.$refs.table.toggleRowExpansion(row, true)
+          row.expand = true
+        } else { // 否则，直接关闭
+          row.expand = false
+        }
+      } else { // 当前row，在expandedRows中，则正在展开当前行
+        if (!row.isNew && row.roles) { // 如果不是新用户
+          this.changeRowLoadingStatus(true, row)
+          getUser(row.id).then(response => {
+            row.roles = response.data.roles
+            this.refreshRoleData(row)
+            this.changeRowLoadingStatus(false, row)
+          }).catch(message => {
+            this.$message.error(message)
+            row.edit = false
+            this.refreshRoleData(row)
+            this.changeRowLoadingStatus(false, row)
+          })
+        }
+        row.expand = true
       }
     },
 
@@ -382,105 +522,17 @@ export default {
       this.$set(this.list, this.list.indexOf(row), row)
     },
 
-    onSearch() {
-      this.listQuery.page = 1
-      this.fetchList()
-    },
-
-    /**
-     * 创建新用户
-     */
-    onCreate() {
-      this.dialogVisible = true
-      this.dialogModel = null
-      this.dialogData = {
-        id: 0,
-        username: null,
-        password: null,
-        email: null,
-        mobile: null,
-        state: 1,
-        expand: false,
-        loading: false,
-        roles: []
+    refreshRoleData(row) {
+      row.rolesData = [] // 重置菜单数据
+      for (let i = 0; i < this.originRolesData.length; i++) { // 从原始菜单数据中生成tree数据
+        const item = this.originRolesData[i]
+        row.rolesData.push({
+          key: item.id,
+          label: item.role_name,
+          remark: item.remark,
+          disabled: !row.edit
+        })
       }
-      this.dialogStatus = 'create'
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-
-    /**
-     * 确认创建新用户
-     */
-    createConfirm() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          createUser(this.dialogData).then(() => {
-            this.fetchList()
-            this.dialogVisible = false
-            this.$notify.success({ title: '成功', message: '添加成功' })
-          }).catch(message => {
-            this.$notify.error({ title: '添加失败', message: message })
-          })
-        }
-      })
-    },
-
-    /**
-     * 打开编辑对话框
-     * @param model
-     */
-    onEdit(model) {
-      model.loading = true
-      this.dialogVisible = true // 打开对话框
-      this.dialogData = { ...model } // 初始数据
-      getUser(model.id).then((response) => { // 更新数据
-        model.loading = false
-        model = Object.assign(model, response.data)
-        model.roles = model.roles || []
-        this.dialogModel = model
-        this.dialogData = { ...model } // 复制对象到对话框临时数据
-        this.dialogStatus = 'update'
-        this.$nextTick(() => {
-          this.$refs['dataForm'].clearValidate()
-        })
-      }).catch(message => {
-        this.$message.error({ message: message })
-      })
-    },
-
-    /**
-     * 确认编辑
-     */
-    editConfirm() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          updateUser(this.dialogData.id, this.dialogData).then(() => {
-            this.dialogVisible = false
-            this.fetchList()
-            this.$notify.success({ title: '成功', message: '更新成功' })
-          }).catch(message => {
-            this.$notify.error({ title: '失败', message: message })
-          })
-        }
-      })
-    },
-
-    onDelete(row) {
-      this.$confirm(`是否确认删除【${row.username}】？`, '提示', {
-        confirmButtonText: '删除',
-        cancelButtonText: '取消',
-        type: 'error',
-        center: true
-      }).then(() => {
-        deleteUser(row.id).then(response => {
-          this.fetchList()
-          this.$notify.success({ title: '删除成功', message: response.data.username })
-        }).catch(message => {
-          this.$notify.error({ title: '失败', message: message })
-        })
-      }).catch(() => {})
     }
   }
 }
