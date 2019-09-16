@@ -52,7 +52,8 @@ export const componentPool = {
   'Nested': () => import('@/views/basic/Nested'),
   'UserManage': () => import('@/views/modules/manage/User'),
   'RoleManage': () => import('@/views/modules/manage/Role'),
-  'MenuManage': () => import('@/views/modules/manage/Menu')
+  'MenuManage': () => import('@/views/modules/manage/Menu'),
+  'Template': () => import('@/views/modules/manage/Template')
 }
 
 const createRouter = () => new Router({
