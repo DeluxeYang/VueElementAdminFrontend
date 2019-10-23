@@ -2,10 +2,12 @@
   <div
     v-loading="listLoading"
     class="app-container">
-    <dragTreeTable
-      :data="treeData"
-      :on-drag="onTreeDataChange"
-      draggable="true" />
+    <div class="table-container">
+      <dragTreeTable
+        :data="treeData"
+        :on-drag="onTreeDataChange"
+        draggable="true" />
+    </div>
 
     <el-dialog
       v-dialogDrag

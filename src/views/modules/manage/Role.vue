@@ -34,189 +34,192 @@
       </el-row>
     </div>
 
-    <el-table
-      ref="table"
-      v-loading="listLoading"
-      :data="list"
-      row-key="id"
-      highlight-current-row
-      style="width: 100%; margin-top: 20px;"
-      @expand-change="onExpandChange"
-      @row-click="rowExpand">
-      <el-table-column
-        type="expand"
-        width="40">
-        <template slot="header">
-          <i
-            v-if="rowLoading"
-            class="el-icon-more-outline" />
-        </template>
-        <template slot-scope="scope">
-          <el-row :gutter="20">
-            <el-col :span="8">
-              <el-tree
-                :ref="'tree'+scope.row.id"
-                v-loading="scope.row.loading"
-                :data="scope.row.menuTreeData"
-                :default-checked-keys="scope.row.menu"
-                show-checkbox
-                node-key="id">
-                <span
-                  slot-scope="{ node, data }"
-                  style="margin-left: 10px">
-                  <span v-if="data.menu_type >= 2">
-                    <el-tag
-                      v-if="data.menu_type === 2"
-                      type="success"
-                      size="mini">查询</el-tag>
-                    <el-tag
-                      v-else-if="data.menu_type === 3"
-                      size="mini">新增</el-tag>
-                    <el-tag
-                      v-else-if="data.menu_type === 4"
-                      type="info"
-                      size="mini">编辑</el-tag>
-                    <el-tag
-                      v-else-if="data.menu_type === 5"
-                      type="warning"
-                      size="mini">删除</el-tag>
-                    <el-tag
-                      v-else-if="data.menu_type === 6"
-                      type="danger"
-                      size="mini">导出</el-tag>
+    <div class="table-container">
+      <el-table
+        ref="table"
+        v-loading="listLoading"
+        :data="list"
+        row-key="id"
+        highlight-current-row
+        header-row-class-name="table-header"
+        header-cell-class-name="table-header-cell"
+        @expand-change="onExpandChange"
+        @row-click="rowExpand">
+        <el-table-column
+          type="expand"
+          width="40">
+          <template slot="header">
+            <i
+              v-if="rowLoading"
+              class="el-icon-more-outline" />
+          </template>
+          <template slot-scope="scope">
+            <el-row :gutter="20">
+              <el-col :span="8">
+                <el-tree
+                  :ref="'tree'+scope.row.id"
+                  v-loading="scope.row.loading"
+                  :data="scope.row.menuTreeData"
+                  :default-checked-keys="scope.row.menu"
+                  show-checkbox
+                  node-key="id">
+                  <span
+                    slot-scope="{ node, data }"
+                    style="margin-left: 10px">
+                    <span v-if="data.menu_type >= 2">
+                      <el-tag
+                        v-if="data.menu_type === 2"
+                        type="success"
+                        size="mini">查询</el-tag>
+                      <el-tag
+                        v-else-if="data.menu_type === 3"
+                        size="mini">新增</el-tag>
+                      <el-tag
+                        v-else-if="data.menu_type === 4"
+                        type="info"
+                        size="mini">编辑</el-tag>
+                      <el-tag
+                        v-else-if="data.menu_type === 5"
+                        type="warning"
+                        size="mini">删除</el-tag>
+                      <el-tag
+                        v-else-if="data.menu_type === 6"
+                        type="danger"
+                        size="mini">导出</el-tag>
+                    </span>
+                    <span v-else>
+                      <el-link :underline="false">{{ data.menu_name }}</el-link>
+                    </span>
                   </span>
-                  <span v-else>
-                    <el-link :underline="false">{{ data.menu_name }}</el-link>
-                  </span>
-                </span>
-              </el-tree>
-            </el-col>
-          </el-row>
-        </template>
-      </el-table-column>
+                </el-tree>
+              </el-col>
+            </el-row>
+          </template>
+        </el-table-column>
 
-      <el-table-column
-        prop="index"
-        label="#"
-        align="center"
-        width="50" />
+        <el-table-column
+          prop="index"
+          label="#"
+          align="center"
+          width="50" />
 
-      <el-table-column
-        prop="name"
-        label="角色名称"
-        align="center">
-        <template slot-scope="scope">
-          <span
-            v-if="scope.row.edit"
-            @click.stop>
-            <el-input
-              v-model="scope.row.role_name"
-              :disabled="scope.row.loading"
-              size="small" />
-          </span>
-          <span v-else> {{ scope.row.role_name }} </span>
-        </template>
-      </el-table-column>
+        <el-table-column
+          prop="name"
+          label="角色名称"
+          align="center">
+          <template slot-scope="scope">
+            <span
+              v-if="scope.row.edit"
+              @click.stop>
+              <el-input
+                v-model="scope.row.role_name"
+                :disabled="scope.row.loading"
+                size="small" />
+            </span>
+            <span v-else> {{ scope.row.role_name }} </span>
+          </template>
+        </el-table-column>
 
-      <el-table-column
-        prop="remark"
-        label="备注"
-        align="center">
-        <template slot-scope="scope">
-          <span
-            v-if="scope.row.edit"
-            @click.stop>
-            <el-input
-              v-model="scope.row.remark"
-              :disabled="scope.row.loading"
-              size="small" />
-          </span>
-          <span v-else> {{ scope.row.remark }} </span>
-        </template>
-      </el-table-column>
+        <el-table-column
+          prop="remark"
+          label="备注"
+          align="center">
+          <template slot-scope="scope">
+            <span
+              v-if="scope.row.edit"
+              @click.stop>
+              <el-input
+                v-model="scope.row.remark"
+                :disabled="scope.row.loading"
+                size="small" />
+            </span>
+            <span v-else> {{ scope.row.remark }} </span>
+          </template>
+        </el-table-column>
 
-      <el-table-column
-        align="center"
-        label="操作"
-        width="200">
-        <template slot-scope="scope">
-          <span v-if="!scope.row.isNew">
-            <span v-if="scope.row.edit">
+        <el-table-column
+          align="center"
+          label="操作"
+          width="200">
+          <template slot-scope="scope">
+            <span v-if="!scope.row.isNew">
+              <span v-if="scope.row.edit">
+                <el-button
+                  v-if="updateFlag"
+                  :disabled="scope.row.loading"
+                  :icon="icons.CHECK_ICON"
+                  type="success"
+                  size="mini"
+                  @click.prevent.stop="onEditConfirm(scope.row)">
+                  确认
+                </el-button>
+              </span>
+              <span v-else>
+                <el-button
+                  v-if="updateFlag"
+                  :icon="icons.UPDATE_ICON"
+                  type="primary"
+                  size="mini"
+                  @click.prevent.stop="onEdit(scope.row)">
+                  编辑
+                </el-button>
+              </span>
+              <span v-if="scope.row.edit">
+                <el-button
+                  v-if="updateFlag"
+                  :icon="icons.CLOSE_ICON"
+                  type="warning"
+                  size="mini"
+                  style="margin-left: 10px"
+                  @click.prevent.stop="onEditCancel(scope.row)">
+                  取消
+                </el-button>
+              </span>
+              <span v-else>
+                <el-button
+                  v-if="deleteFlag"
+                  :icon="icons.DELETE_ICON"
+                  type="danger"
+                  size="mini"
+                  style="margin-left: 10px"
+                  @click.prevent.stop="onDelete(scope.row)">
+                  删除
+                </el-button>
+              </span>
+            </span>
+            <span v-else>
               <el-button
-                v-if="updateFlag"
+                v-if="createFlag"
                 :disabled="scope.row.loading"
                 :icon="icons.CHECK_ICON"
                 type="success"
                 size="mini"
-                @click.prevent.stop="onEditConfirm(scope.row)">
+                @click.prevent.stop="onCreateConfirm(scope.row)">
                 确认
               </el-button>
-            </span>
-            <span v-else>
+
               <el-button
-                v-if="updateFlag"
-                :icon="icons.UPDATE_ICON"
-                type="primary"
-                size="mini"
-                @click.prevent.stop="onEdit(scope.row)">
-                编辑
-              </el-button>
-            </span>
-            <span v-if="scope.row.edit">
-              <el-button
-                v-if="updateFlag"
+                v-if="createFlag"
                 :icon="icons.CLOSE_ICON"
                 type="warning"
                 size="mini"
                 style="margin-left: 10px"
-                @click.prevent.stop="onEditCancel(scope.row)">
+                @click.prevent.stop="onCreateCancel(scope.row)">
                 取消
               </el-button>
             </span>
-            <span v-else>
-              <el-button
-                v-if="deleteFlag"
-                :icon="icons.DELETE_ICON"
-                type="danger"
-                size="mini"
-                style="margin-left: 10px"
-                @click.prevent.stop="onDelete(scope.row)">
-                删除
-              </el-button>
-            </span>
-          </span>
-          <span v-else>
-            <el-button
-              v-if="createFlag"
-              :disabled="scope.row.loading"
-              :icon="icons.CHECK_ICON"
-              type="success"
-              size="mini"
-              @click.prevent.stop="onCreateConfirm(scope.row)">
-              确认
-            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
 
-            <el-button
-              v-if="createFlag"
-              :icon="icons.CLOSE_ICON"
-              type="warning"
-              size="mini"
-              style="margin-left: 10px"
-              @click.prevent.stop="onCreateCancel(scope.row)">
-              取消
-            </el-button>
-          </span>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="listQuery.page"
-      :limit.sync="listQuery.limit"
-      style="text-align: center;"
-      @pagination="fetchList" />
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="listQuery.page"
+        :limit.sync="listQuery.limit"
+        style="text-align: center;"
+        @pagination="fetchList" />
+    </div>
   </div>
 </template>
 

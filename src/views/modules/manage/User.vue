@@ -35,213 +35,216 @@
       </el-row>
     </div>
 
-    <el-table
-      ref="table"
-      v-loading="listLoading"
-      :data="list"
-      row-key="id"
-      highlight-current-row
-      style="width: 100%; margin-top: 20px;"
-      @expand-change="onExpandChange"
-      @row-click="rowExpand">
-      <el-table-column
-        type="expand"
-        width="40">
-        <template slot="header">
-          <i
-            v-if="rowLoading"
-            class="el-icon-more-outline" />
-        </template>
+    <div class="table-container">
+      <el-table
+        ref="table"
+        v-loading="listLoading"
+        :data="list"
+        row-key="id"
+        highlight-current-row
+        header-row-class-name="table-header"
+        header-cell-class-name="table-header-cell"
+        @expand-change="onExpandChange"
+        @row-click="rowExpand">
+        <el-table-column
+          type="expand"
+          width="40">
+          <template slot="header">
+            <i
+              v-if="rowLoading"
+              class="el-icon-more-outline" />
+          </template>
 
-        <template slot-scope="scope">
-          <el-row :gutter="20">
-            <el-col
-              :span="12"
-              :offset="6">
-              <el-transfer
-                :ref="'transfer'+scope.row.id"
-                v-model="scope.row.roles"
-                v-loading="scope.row.loading"
-                :data="scope.row.rolesData"
-                :titles="['未关联角色', '已关联角色']" />
-            </el-col>
-          </el-row>
-        </template>
-      </el-table-column>
+          <template slot-scope="scope">
+            <el-row :gutter="20">
+              <el-col
+                :span="12"
+                :offset="6">
+                <el-transfer
+                  :ref="'transfer'+scope.row.id"
+                  v-model="scope.row.roles"
+                  v-loading="scope.row.loading"
+                  :data="scope.row.rolesData"
+                  :titles="['未关联角色', '已关联角色']" />
+              </el-col>
+            </el-row>
+          </template>
+        </el-table-column>
 
-      <el-table-column
-        prop="index"
-        label="#"
-        align="center"
-        width="50" />
+        <el-table-column
+          prop="index"
+          label="#"
+          align="center"
+          width="50" />
 
-      <el-table-column
-        label="用户名"
-        align="center">
-        <template slot-scope="scope">
-          <span
-            v-if="scope.row.edit"
-            @click.stop>
-            <el-input
-              v-model="scope.row.username"
-              :disabled="scope.row.loading"
-              size="small" />
-          </span>
-          <span v-else> {{ scope.row.username }} </span>
-        </template>
-      </el-table-column>
+        <el-table-column
+          label="用户名"
+          align="center">
+          <template slot-scope="scope">
+            <span
+              v-if="scope.row.edit"
+              @click.stop>
+              <el-input
+                v-model="scope.row.username"
+                :disabled="scope.row.loading"
+                size="small" />
+            </span>
+            <span v-else> {{ scope.row.username }} </span>
+          </template>
+        </el-table-column>
 
-      <el-table-column
-        label="邮箱"
-        align="center">
-        <template slot-scope="scope">
-          <span
-            v-if="scope.row.edit"
-            @click.stop>
-            <el-input
-              v-model="scope.row.email"
-              :disabled="scope.row.loading"
-              size="small" />
-          </span>
-          <span v-else> {{ scope.row.email }} </span>
-        </template>
-      </el-table-column>
+        <el-table-column
+          label="邮箱"
+          align="center">
+          <template slot-scope="scope">
+            <span
+              v-if="scope.row.edit"
+              @click.stop>
+              <el-input
+                v-model="scope.row.email"
+                :disabled="scope.row.loading"
+                size="small" />
+            </span>
+            <span v-else> {{ scope.row.email }} </span>
+          </template>
+        </el-table-column>
 
-      <el-table-column
-        label="电话"
-        align="center">
-        <template slot-scope="scope">
-          <span
-            v-if="scope.row.edit"
-            @click.stop>
-            <el-input
-              v-model="scope.row.mobile"
-              :disabled="scope.row.loading"
-              size="small" />
-          </span>
-          <span v-else> {{ scope.row.mobile }} </span>
-        </template>
-      </el-table-column>
+        <el-table-column
+          label="电话"
+          align="center">
+          <template slot-scope="scope">
+            <span
+              v-if="scope.row.edit"
+              @click.stop>
+              <el-input
+                v-model="scope.row.mobile"
+                :disabled="scope.row.loading"
+                size="small" />
+            </span>
+            <span v-else> {{ scope.row.mobile }} </span>
+          </template>
+        </el-table-column>
 
-      <el-table-column
-        label="状态"
-        align="center">
-        <template slot-scope="scope">
-          <span
-            v-if="scope.row.edit"
-            @click.stop>
-            <el-radio-group
-              v-model="scope.row.state"
-              size="small">
-              <el-radio-button :label="0">
-                禁用
-              </el-radio-button>
-              <el-radio-button :label="1">
+        <el-table-column
+          label="状态"
+          align="center">
+          <template slot-scope="scope">
+            <span
+              v-if="scope.row.edit"
+              @click.stop>
+              <el-radio-group
+                v-model="scope.row.state"
+                size="small">
+                <el-radio-button :label="0">
+                  禁用
+                </el-radio-button>
+                <el-radio-button :label="1">
+                  启用
+                </el-radio-button>
+              </el-radio-group>
+            </span>
+            <span v-else>
+              <el-tag
+                v-if="scope.row.state === 1"
+                type="success">
                 启用
-              </el-radio-button>
-            </el-radio-group>
-          </span>
-          <span v-else>
-            <el-tag
-              v-if="scope.row.state === 1"
-              type="success">
-              启用
-            </el-tag>
-            <el-tag
-              v-else-if="scope.row.state === 0"
-              type="danger">
-              禁用
-            </el-tag>
-          </span>
-        </template>
-      </el-table-column>
+              </el-tag>
+              <el-tag
+                v-else-if="scope.row.state === 0"
+                type="danger">
+                禁用
+              </el-tag>
+            </span>
+          </template>
+        </el-table-column>
 
-      <el-table-column
-        align="center"
-        label="操作"
-        width="200">
-        <template slot-scope="scope">
-          <span v-if="!scope.row.isNew">
-            <span v-if="scope.row.edit">
+        <el-table-column
+          align="center"
+          label="操作"
+          width="200">
+          <template slot-scope="scope">
+            <span v-if="!scope.row.isNew">
+              <span v-if="scope.row.edit">
+                <el-button
+                  v-if="updateFlag"
+                  :loading="scope.row.loading"
+                  :icon="icons.CHECK_ICON"
+                  type="success"
+                  size="mini"
+                  @click.prevent.stop="onEditConfirm(scope.row)">
+                  确认
+                </el-button>
+              </span>
+              <span v-else>
+                <el-button
+                  v-if="updateFlag"
+                  :loading="scope.row.loading"
+                  :icon="icons.UPDATE_ICON"
+                  type="primary"
+                  size="mini"
+                  @click.prevent.stop="onEdit(scope.row)">
+                  编辑
+                </el-button>
+              </span>
+              <span v-if="scope.row.edit">
+                <el-button
+                  v-if="updateFlag"
+                  :loading="scope.row.loading"
+                  :icon="icons.CLOSE_ICON"
+                  type="warning"
+                  size="mini"
+                  style="margin-left: 10px"
+                  @click.prevent.stop="onEditCancel(scope.row)">
+                  取消
+                </el-button>
+              </span>
+              <span v-else>
+                <el-button
+                  v-if="deleteFlag"
+                  :loading="scope.row.loading"
+                  :icon="icons.DELETE_ICON"
+                  type="danger"
+                  size="mini"
+                  style="margin-left: 10px"
+                  @click.prevent.stop="onDelete(scope.row)">
+                  删除
+                </el-button>
+              </span>
+            </span>
+            <span v-else>
               <el-button
-                v-if="updateFlag"
+                v-if="createFlag"
                 :loading="scope.row.loading"
                 :icon="icons.CHECK_ICON"
                 type="success"
                 size="mini"
-                @click.prevent.stop="onEditConfirm(scope.row)">
+                @click.prevent.stop="onCreateConfirm(scope.row)">
                 确认
               </el-button>
-            </span>
-            <span v-else>
+
               <el-button
-                v-if="updateFlag"
-                :loading="scope.row.loading"
-                :icon="icons.UPDATE_ICON"
-                type="primary"
-                size="mini"
-                @click.prevent.stop="onEdit(scope.row)">
-                编辑
-              </el-button>
-            </span>
-            <span v-if="scope.row.edit">
-              <el-button
-                v-if="updateFlag"
-                :loading="scope.row.loading"
+                v-if="createFlag"
                 :icon="icons.CLOSE_ICON"
+                :loading="scope.row.loading"
                 type="warning"
                 size="mini"
                 style="margin-left: 10px"
-                @click.prevent.stop="onEditCancel(scope.row)">
+                @click.prevent.stop="onCreateCancel(scope.row)">
                 取消
               </el-button>
             </span>
-            <span v-else>
-              <el-button
-                v-if="deleteFlag"
-                :loading="scope.row.loading"
-                :icon="icons.DELETE_ICON"
-                type="danger"
-                size="mini"
-                style="margin-left: 10px"
-                @click.prevent.stop="onDelete(scope.row)">
-                删除
-              </el-button>
-            </span>
-          </span>
-          <span v-else>
-            <el-button
-              v-if="createFlag"
-              :loading="scope.row.loading"
-              :icon="icons.CHECK_ICON"
-              type="success"
-              size="mini"
-              @click.prevent.stop="onCreateConfirm(scope.row)">
-              确认
-            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
 
-            <el-button
-              v-if="createFlag"
-              :icon="icons.CLOSE_ICON"
-              :loading="scope.row.loading"
-              type="warning"
-              size="mini"
-              style="margin-left: 10px"
-              @click.prevent.stop="onCreateCancel(scope.row)">
-              取消
-            </el-button>
-          </span>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="listQuery.page"
-      :limit.sync="listQuery.limit"
-      style="text-align: center;"
-      @pagination="fetchList" />
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="listQuery.page"
+        :limit.sync="listQuery.limit"
+        style="text-align: center;"
+        @pagination="fetchList" />
+    </div>
   </div>
 </template>
 
