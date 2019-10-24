@@ -1,16 +1,18 @@
 <template>
   <el-breadcrumb
     class="app-breadcrumb"
-    separator="/">
+    separator=">">
     <transition-group name="breadcrumb">
       <el-breadcrumb-item
         v-for="(item,index) in levelList"
         :key="item.path">
         <span
-          v-if="item.redirect==='noRedirect'||index===levelList.length-1"
-          class="no-redirect">{{ item.meta.title }}</span>
+          v-if="item.redirect==='noredirect'||index===levelList.length-1"
+          class="no-redirect">
+          {{ item.meta.title }}</span>
         <a
           v-else
+          class="redirect"
           @click.prevent="handleLink(item)">{{ item.meta.title }}</a>
       </el-breadcrumb-item>
     </transition-group>
@@ -36,22 +38,14 @@ export default {
   },
   methods: {
     getBreadcrumb() {
-      // only show routes with meta.title
-      const matched = this.$route.matched.filter(item => item.meta && item.meta.title)
-      // const first = matched[0]
+      const matched = this.$route.matched.filter(item => item.name)
 
-      // if (!this.isDashboard(first)) {
-      //   matched = [{ path: '/dashboard', meta: { title: 'Dashboard' }}].concat(matched)
+      // const first = matched[0]
+      // if (first && first.name !== 'dashboard') {
+      //   matched = [{ path: '/dashboard', meta: { title: 'dashboards' }}].concat(matched)
       // }
 
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
-    },
-    isDashboard(route) {
-      const name = route && route.name
-      if (!name) {
-        return false
-      }
-      return name.trim().toLocaleLowerCase() === 'Dashboard'.toLocaleLowerCase()
     },
     pathCompile(path) {
       // To solve this problem https://github.com/PanJiaChen/vue-element-admin/issues/561
@@ -62,7 +56,7 @@ export default {
     handleLink(item) {
       const { redirect, path } = item
       if (redirect) {
-        this.$router.push(redirect)
+        this.$router.push(path + '/' + redirect)
         return
       }
       this.$router.push(this.pathCompile(path))
@@ -71,16 +65,20 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.app-breadcrumb.el-breadcrumb {
-  display: inline-block;
-  font-size: 14px;
-  line-height: 50px;
-  margin-left: 8px;
+<style rel="stylesheet/scss" lang="scss" scoped>
+  .app-breadcrumb.el-breadcrumb {
+    display: inline-block;
+    font-size: 14px;
+    line-height: 50px;
+    margin-left: 10px;
 
-  .no-redirect {
-    color: #97a8be;
-    cursor: text;
+    .no-redirect {
+      color: black;
+      cursor: text;
+    }
+
+    .redirect {
+      color: #97a8be;
+    }
   }
-}
 </style>

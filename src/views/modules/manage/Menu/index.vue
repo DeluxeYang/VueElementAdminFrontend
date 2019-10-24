@@ -359,8 +359,8 @@ export default {
         this.treeData.lists = this.menuTreeDFS(response.data, null)
         console.log(this.treeData.lists)
         this.listLoading = false
-      }).catch(message => {
-        this.$message.error({ message: message })
+      }).catch(error => {
+        this.$message.error({ message: error.message })
       })
     },
 
@@ -580,8 +580,8 @@ export default {
         this.$notify.success({ title: '保存成功', message: '保存成功', duration: 3000 })
         this.isModified = false
         this.fetchMenu()
-      }).catch(message => {
-        this.$notify.error({ title: '保存失败', message: message, duration: 3000 })
+      }).catch(error => {
+        this.$notify.error({ title: '保存失败', message: error.message, duration: 3000 })
       })
     },
 

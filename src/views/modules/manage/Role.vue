@@ -295,8 +295,8 @@ export default {
         this.listQuery.limit = response.data.limit
         this.listQuery.page = response.data.page
         this.listLoading = false
-      }).catch(message => {
-        this.$message.error(message)
+      }).catch(error => {
+        this.$message.error(error.message)
       })
     },
 
@@ -306,8 +306,8 @@ export default {
     fetchMenuData() {
       getMenus().then(response => {
         this.originMenuData = response.data
-      }).catch(message => {
-        this.$message.error(message)
+      }).catch(error => {
+        this.$message.error(error.message)
       })
     },
 
@@ -365,9 +365,9 @@ export default {
             this.changeRowLoadingStatus(false, row)
             this.refreshRoleData(row) // 刷新展开框Tree数据
             this.$notify.success({ title: '成功', message: '添加成功' })
-          }).catch(message => {
+          }).catch(error => {
             this.changeRowLoadingStatus(false, row)
-            this.$notify.error({ title: '添加失败', message: message })
+            this.$notify.error({ title: '添加失败', message: error.message })
           })
         }
       }
@@ -411,9 +411,9 @@ export default {
           this.changeRowLoadingStatus(false, row)
           this.refreshRoleData(row) // 刷新展开框Tree数据
           this.$notify.success({ title: '成功', message: '编辑成功' })
-        }).catch(message => {
+        }).catch(error => {
           this.changeRowLoadingStatus(false, row)
-          this.$notify.error({ title: '编辑失败', message: message })
+          this.$notify.error({ title: '编辑失败', message: error.message })
         })
       }
     },
@@ -432,8 +432,8 @@ export default {
         }
         this.refreshRoleData(row)
         this.changeRowLoadingStatus(false, row)
-      }).catch(message => {
-        this.$message.error(message)
+      }).catch(error => {
+        this.$message.error(error.message)
       })
     },
 
@@ -455,8 +455,8 @@ export default {
             }
           }
           this.$notify.success({ title: '删除成功', message: response.data.role_name })
-        }).catch(message => {
-          this.$notify.error({ title: '失败', message: message })
+        }).catch(error => {
+          this.$notify.error({ title: '失败', message: error.message })
         })
       }).catch(() => {})
     },
@@ -566,7 +566,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

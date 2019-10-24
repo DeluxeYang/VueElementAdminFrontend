@@ -318,8 +318,8 @@ export default {
         this.listQuery.page = response.data.page
         this.listQuery.limit = response.data.limit
         this.listLoading = false
-      }).catch(message => {
-        this.$message.error(message)
+      }).catch(error => {
+        this.$message.error(error.message)
       })
     },
 
@@ -336,8 +336,8 @@ export default {
           this.rolesQuery.page++
           this.fetchRoles()
         }
-      }).catch(message => {
-        this.$message.error(message)
+      }).catch(error => {
+        this.$message.error(error.message)
       })
     },
 
@@ -397,9 +397,9 @@ export default {
             this.refreshRoleData(row) // 刷新展开框Tree数据
             this.changeRowLoadingStatus(false, row)
             this.$notify.success({ title: '成功', message: '添加成功' })
-          }).catch(message => {
+          }).catch(error => {
             this.changeRowLoadingStatus(false, row)
-            this.$notify.error({ title: '添加失败', message: message })
+            this.$notify.error({ title: '添加失败', message: error.message })
           })
         }
       }
@@ -428,15 +428,15 @@ export default {
     onEditConfirm(row) { // 编辑确认: 后端
       if (this.$refs.hasOwnProperty('transfer' + row.id) && this.$refs['transfer' + row.id]) {
         this.changeRowLoadingStatus(true, row)
-        updateUser(row.id, row).then(response => {
+        updateUser(row, row.id).then(response => {
           row = Object.assign(row, response.data)
           row.edit = false
           this.refreshRoleData(row) // 刷新展开框Tree数据
           this.changeRowLoadingStatus(false, row)
           this.$notify.success({ title: '成功', message: '编辑成功' })
-        }).catch(message => {
+        }).catch(error => {
           this.changeRowLoadingStatus(false, row)
-          this.$notify.error({ title: '编辑失败', message: message })
+          this.$notify.error({ title: '编辑失败', message: error.message })
         })
       }
     },
@@ -451,8 +451,8 @@ export default {
         row.edit = false
         this.refreshRoleData(row)
         this.changeRowLoadingStatus(false, row)
-      }).catch(message => {
-        this.$message.error(message)
+      }).catch(error => {
+        this.$message.error(error.message)
       })
     },
 
@@ -474,8 +474,8 @@ export default {
             }
           }
           this.$notify.success({ title: '删除成功', message: response.data.username })
-        }).catch(message => {
-          this.$notify.error({ title: '失败', message: message })
+        }).catch(error => {
+          this.$notify.error({ title: '失败', message: error.message })
         })
       }).catch(() => {})
     },
@@ -505,8 +505,8 @@ export default {
             row.roles = response.data.roles
             this.refreshRoleData(row)
             this.changeRowLoadingStatus(false, row)
-          }).catch(message => {
-            this.$message.error(message)
+          }).catch(error => {
+            this.$message.error(error.message)
             row.edit = false
             this.refreshRoleData(row)
             this.changeRowLoadingStatus(false, row)
@@ -540,6 +540,3 @@ export default {
   }
 }
 </script>
-
-<style>
-</style>

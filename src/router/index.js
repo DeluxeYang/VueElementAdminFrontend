@@ -53,7 +53,9 @@ export const componentPool = {
   'UserManage': () => import('@/views/modules/manage/User'),
   'RoleManage': () => import('@/views/modules/manage/Role'),
   'MenuManage': () => import('@/views/modules/manage/Menu'),
-  'Template': () => import('@/views/modules/manage/Template')
+  'Template': () => import('@/views/modules/manage/Template'),
+  'UserWithDialog': () => import('@/views/modules/manage/UserWithDialog')
+  // 'RoleWithDialog': () => import('@/views/modules/manage/RoleWithDialog')
 }
 
 const createRouter = () => new Router({

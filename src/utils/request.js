@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Message, MessageBox } from 'element-ui'
+import { MessageBox } from 'element-ui'
 import store from '../store'
 import { getToken } from '@/utils/auth'
 
@@ -52,19 +52,13 @@ service.interceptors.response.use(
           })
         }).catch(() => {})
       }
-      return Promise.reject(res.message)
+      return Promise.reject(res)
     } else { // http请求正常，且后端返回数据中code=200
-      return response.data
+      return res
     }
   },
   error => { // http请求失败
-    console.log(error) // for debug
-    Message({
-      message: '与服务器连接异常',
-      type: 'error',
-      duration: 5 * 1000
-    })
-    return Promise.reject(error.message)
+    return Promise.reject(error)
   }
 )
 
